@@ -43,3 +43,9 @@ model InstagramNonEvent {
 
   @@index([organizerId])
 }
+
+model WeatherData {
+  id              Int       @default(autoincrement()) @id
+  timeRetrieved   DateTime  @default(now())
+  jsonData        String    @db.VarChar(5000)
+}
