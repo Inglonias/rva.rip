@@ -16,13 +16,19 @@ export default defineCachedEventHandler(async (event) => {
 	swr: true,
 });
 
-const ForecastDay = {HighTemperature: 0, LowTemperature: 0, IconIndex: -1, DateString: "", WeatherString: ""};
-const ForecastReturnObject = {WeatherData: [
-    Object.create(ForecastDay), // Today
-    Object.create(ForecastDay), // Tomorrow
-    Object.create(ForecastDay)  // Day After Tomorrow
-]};
+type ForecastDay = {
+	HighTemperature: number,
+	LowTemperature: number,
+	IconIndex: number,
+	WeatherSummary: string,
+	DateString: string
+}
 
+type ForecastData = {
+	WeatherData: Array<ForecastDay>
+}
+
+//This code was developed with Co-Pilot assistance since I'm not entirely sure what I'm doing. It didn't write this code entirely, but I asked it for help.
 async function fetchAccuweatherForecast() {
 	let accuweatherForecast = await useStorage().getItem('accuweatherForecast');
 	if (!process.env.ACCUWEATHER_API_KEY) {
@@ -32,20 +38,31 @@ async function fetchAccuweatherForecast() {
 		throw new Error('No AccuWeather City ID found. Please set the ACCUWEATHER_CITY_ID environment variable.');
 	}
 	try {
-		const res = await fetch(
-			`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${process.env.ACCUWEATHER_CITY_ID}?apikey=${process.env.ACCUWEATHER_API_KEY}`,
-			{ headers: serverFetchHeaders }
-		);
-		if (!res.ok) {
-			throw new Error(`Error fetching Accuweather forecast: ${res.status} ${res.statusText}`);
+		let res;
+		if (!isDevelopment) {
+			res = await fetch(
+				`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${process.env.ACCUWEATHER_CITY_ID}?apikey=${process.env.ACCUWEATHER_API_KEY}`,
+				{ headers: serverFetchHeaders }
+			);
+			if (!res.ok) {
+				throw new Error('API call failed');
+			}
+		} else {
+			// Fetch the contents of the JSON file
+			res = await fetch('assets/accuweather-example.json');
+			if (!res.ok) {
+				throw new Error('Failed to load JSON file');
+			}
 		}
-		const data = res.json();
-		accuweatherForecast = Object.create(ForecastReturnObject);
+		const data = await res.json();
+		//accuweatherForecast = Object.create(ForecastReturnObject);
+		const accuweatherForecast: ForecastData = {
+			WeatherData: new Array<ForecastDay>(3)
+		}
+		
 		await useStorage().setItem('accuweatherForecast', accuweatherForecast);
 	}
 	catch (e) {
 		console.error("Error fetching AccuWeather forecast: ", e);
 	}
-	return accuweatherForecast;
-  }
-
+}
