@@ -55,11 +55,10 @@ async function fetchAccuweatherForecast() {
 			}
 		}
 		const data = await res.json();
-		//accuweatherForecast = Object.create(ForecastReturnObject);
 		const accuweatherForecast: ForecastData = {
-			WeatherData: new Array<ForecastDay>(3)
+			WeatherData: new Array<ForecastDay>(5)
 		}
-		
+
 		await useStorage().setItem('accuweatherForecast', accuweatherForecast);
 	}
 	catch (e) {
