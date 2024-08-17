@@ -28,7 +28,6 @@ type ForecastData = {
 	WeatherData: Array<ForecastDay>
 }
 
-//This code was developed with Co-Pilot assistance since I'm not entirely sure what I'm doing. It didn't write this code entirely, but I asked it for help.
 async function fetchAccuweatherForecast() {
 	let accuweatherForecast = await useStorage().getItem('accuweatherForecast');
 	if (!process.env.ACCUWEATHER_API_KEY) {
