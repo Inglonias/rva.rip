@@ -354,6 +354,10 @@ async function getEventSources() {
   }));
 }
 
+/* TODO: Accuweather logo with a link to the accuweather site must be included as per branding requirements if you want to use weather data.
+ * Branding requirements can be found at the bottom of https://developer.accuweather.com/packages
+ * Assets can be found linked from there.
+ */
 // Multiple re-renders (which may be unrelated to the fetching) cause this to be called multiple times.
 getEventSources();
 // A hack to move the scrollbar to today after mounting- it is inconsistent otherwise on mobile.
