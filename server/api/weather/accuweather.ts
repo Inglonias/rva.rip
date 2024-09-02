@@ -38,6 +38,8 @@ async function fetchAccuweatherForecast() {
 	}
 	try {
 		let res;
+		//AccuWeather has a fairly restrictive API rate limit of 50 per day for free users.
+		//To get around this, an example response has been provided and will be used in a dev environment.
 		if (!isDevelopment) {
 			res = await fetch(
 				`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${process.env.ACCUWEATHER_CITY_ID}?apikey=${process.env.ACCUWEATHER_API_KEY}`,
